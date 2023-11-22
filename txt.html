@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Information</title>
+    <style>
+        .patient-info {
+            border: 1px solid #000; 
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+	body {
+            background-color: #AFEEEE;
+         font-family: Arial, sans-serif;
+	}
+	.header {
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    background-color: #46D2D2/*#6495ED*/;
+	    color: white;
+	    padding: 10px;
+	}
+
+	.header h1 {
+	    order: 2; /* 제목을 뒤로 보냅니다. */
+	}
+
+	.header img {
+	    width: 50px;
+	    height: auto;
+	    order: 1; /* 이미지를 앞으로 가져옵니다. */
+	    margin-right: 10px;
+	}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Patient Information</h1> <!-- 제목 -->
+    <img src="{{ url_for('static', filename='images/fhir.png') }}" alt="Patient Icon">
+    </div>
+    {% for number, patient_data in data %}
+    <div class="patient-info {{ file_name }}">
+    <h2>No. {{ number }}</h2>
+        {% if patient_data.get('name') %}
+        <p><strong>Name:</strong> {{ patient_data.name[0].given[0] }} {{ patient_data.name[0].family }}</p>
+        {% endif %}
+        {% if patient_data.get('gender') %}
+        <p><strong>Gender:</strong> {{ patient_data.gender }}</p>
+        {% endif %}
+        {% if patient_data.get('birthDate') %}
+        <p><strong>Date of Birth:</strong> {{ patient_data.birthDate }}</p>
+        {% endif %}
+        {% if patient_data.get('identifier') %}
+            <p><strong>Identifier:</strong> {{ patient_data.identifier[0].value }}</p>
+        {% endif %}
+        {% if patient_data.get('address') %}
+        <p><strong>Address:</strong> {{ patient_data.address[0].line[0] }}, {{ patient_data.address[0].city }}, {{ patient_data.address[0].state }}, {{ patient_data.address[0].country }}</p>
+        {% endif %}
+        {% if patient_data.get('postalCode') %}
+        <p><strong>Postal Code:</strong> {{ patient_data.address[0].postalCode }}</p>
+        {% endif %}
+        {% if patient_data.get('telecom') %}
+        <p><strong>Phone:</strong> {{ patient_data.telecom[0].value }}</p>
+        {% endif %}
+        <h4>Additional Information</h4>
+        <ul>
+        {% if patient_data.get('meta') %}
+            <li><strong>Last Updated:</strong> {{ patient_data.meta.lastUpdated }}</li>
+            <li><strong>Resource Type:</strong> {{ patient_data.resourceType }}</li>
+            <li><strong>Version ID:</strong> {{ patient_data.meta.versionId }}</li>
+            <li><strong>Source:</strong> {{ patient_data.meta.source }}</li>
+        {% endif %}
+        </ul>
+    </div>
+    {% endfor %}
+</body>
+</html>
